@@ -1,9 +1,12 @@
 package batch
 
 import (
+	"context"
 	"math"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type user struct {
@@ -19,7 +22,7 @@ func getBatch(n int64, pool int64) (res []user) {
 	return getBatchSemaphore(n, pool)
 }
 
-// Goroutine per each request, limited by Semaphore
+// Goroutine per each request, limited by semaphore
 func getBatchSemaphore(n int64, pool int64) (res []user) {
 	var wg sync.WaitGroup
 	var lock sync.Mutex
@@ -63,5 +66,24 @@ func getBatchDivideWork(n int64, pool int64) (res []user) {
 		batch := <-producer
 		res = append(res, batch...)
 	}
+	return
+}
+
+// limited by errgroup
+func getBatchErrgroup(n int64, pool int64) (res []user) {
+	errG, _ := errgroup.WithContext(context.Background())
+	var lock sync.Mutex
+	errG.SetLimit(int(pool))
+	for i := int64(0); i < n; i++ {
+		id := i
+		errG.Go(func() error {
+			user := getOne(id)
+			lock.Lock()
+			res = append(res, user)
+			lock.Unlock()
+			return nil
+		})
+	}
+	errG.Wait()
 	return
 }

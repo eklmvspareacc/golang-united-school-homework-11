@@ -16,6 +16,10 @@ func Test_getBatchDivideWork(t *testing.T) {
 	test(t, getBatchDivideWork)
 }
 
+func Test_getBatchErrgroup(t *testing.T) {
+	test(t, getBatchErrgroup)
+}
+
 func Test_GetBatch(t *testing.T) {
 	test(t, getBatch)
 }
