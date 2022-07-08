@@ -40,14 +40,9 @@ func getBatchSemaphore(n int64, pool int64) (res []user) {
 	return
 }
 
-type workerResult struct {
-	workerId int64
-	result   []user
-}
-
 //Goroutine per batch of requests
 func getBatchWorkers(n int64, pool int64) (res []user) {
-	producer := make(chan workerResult)
+	producer := make(chan []user)
 	workerCapacity := int64(math.Ceil(float64(n) / float64(pool)))
 	for i := int64(0); i < pool; i++ {
 		go func(worker int64) {
@@ -60,17 +55,13 @@ func getBatchWorkers(n int64, pool int64) (res []user) {
 			for id := startId; id < endId; id++ {
 				batch = append(batch, getOne(id))
 			}
-			producer <- workerResult{worker, batch}
+			producer <- batch
 		}(i)
 	}
 
-	wr := make([]workerResult, pool)
 	for i := int64(0); i < pool; i++ {
-		r := <-producer
-		wr[r.workerId] = r
-	}
-	for _, r := range wr {
-		res = append(res, r.result...)
+		batch := <-producer
+		res = append(res, batch...)
 	}
 	return
 }
