@@ -12,8 +12,8 @@ func Test_getBatchSemaphore(t *testing.T) {
 	test(t, getBatchSemaphore)
 }
 
-func Test_getBatchWorkers(t *testing.T) {
-	test(t, getBatchWorkers)
+func Test_getBatchDivideWork(t *testing.T) {
+	test(t, getBatchDivideWork)
 }
 
 func Test_GetBatch(t *testing.T) {
@@ -84,6 +84,6 @@ func Benchmark_getBatchSemaphore(b *testing.B) {
 	benchmarkOverInput(b, getBatchSemaphore)
 }
 
-func Benchmark_getBatchWorkers(b *testing.B) {
-	benchmarkOverInput(b, getBatchWorkers)
+func Benchmark_getBatchDivideWork(b *testing.B) {
+	benchmarkOverInput(b, getBatchDivideWork)
 }

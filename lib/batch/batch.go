@@ -19,7 +19,7 @@ func getBatch(n int64, pool int64) (res []user) {
 	return getBatchSemaphore(n, pool)
 }
 
-// Goroutine per each request
+// Goroutine per each request, limited by Semaphore
 func getBatchSemaphore(n int64, pool int64) (res []user) {
 	var wg sync.WaitGroup
 	var lock sync.Mutex
@@ -40,8 +40,8 @@ func getBatchSemaphore(n int64, pool int64) (res []user) {
 	return
 }
 
-//Goroutine per batch of requests
-func getBatchWorkers(n int64, pool int64) (res []user) {
+// Divide work by pool number
+func getBatchDivideWork(n int64, pool int64) (res []user) {
 	producer := make(chan []user)
 	workerCapacity := int64(math.Ceil(float64(n) / float64(pool)))
 	for i := int64(0); i < pool; i++ {
