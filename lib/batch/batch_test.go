@@ -20,6 +20,10 @@ func Test_getBatchErrgroup(t *testing.T) {
 	test(t, getBatchErrgroup)
 }
 
+func Test_getBatchWorkerPool(t *testing.T) {
+	test(t, getBatchWorkerPool)
+}
+
 func Test_GetBatch(t *testing.T) {
 	test(t, getBatch)
 }

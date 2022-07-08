@@ -87,3 +87,24 @@ func getBatchErrgroup(n int64, pool int64) (res []user) {
 	errG.Wait()
 	return
 }
+
+// worker pool
+func getBatchWorkerPool(n int64, pool int64) (res []user) {
+	jobs := make(chan int64, n)
+	results := make(chan user, n)
+	for i := int64(0); i < pool; i++ {
+		go func() {
+			for job := range jobs {
+				results <- getOne(job)
+			}
+		}()
+	}
+	for job := int64(0); job < n; job++ {
+		jobs <- job
+	}
+	close(jobs)
+	for r := int64(0); r < n; r++ {
+		res = append(res, <-results)
+	}
+	return
+}
