@@ -70,6 +70,10 @@ func getBatchDivideWork(n int64, pool int64) (res []user) {
 }
 
 // limited by errgroup
+// Warning Note: done just in sake of using errgroup
+// solution is incorrect for 32 bit system
+// will cause no limit if int64 casted to int32 will be negative
+// or wrong limit in other cases
 func getBatchErrgroup(n int64, pool int64) (res []user) {
 	errG, _ := errgroup.WithContext(context.Background())
 	var lock sync.Mutex
